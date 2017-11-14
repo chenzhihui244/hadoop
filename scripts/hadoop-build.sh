@@ -1,6 +1,5 @@
 #!/bin/sh
 
-#HADOOP_URL=http://mirror.bit.edu.cn/apache/hadoop/common/hadoop-2.8.2/hadoop-2.8.2-src.tar.gz
 HADOOP_URL=http://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.8.2/hadoop-2.8.2-src.tar.gz
 
 HADOOP_SRC=hadoop-2.8.2-src.tar.gz
@@ -11,19 +10,16 @@ HADOOP_BIN=hadoop-2.8.2.tar.gz
 HADOOP_DIR=${HADOOP_BIN%\.*}
 HADOOP_DIR=${HADOOP_DIR%\.*}
 
-export LD_LIBRARY_PATH=/usr/local/lib64:${LD_LIBRARY_PATH}
+#set -x
 
-function warn {
-	if ! eval "$@"; then
-		echo >2 "WARNING: command ($@) failed!"
-		exit 1
-	fi
+. $TOPDIR/scripts/env.sh
+
+function hadoop_installed {
+	[ -e $TOPDIR/install/${HADOOP_DIR}/bin/hadoop ]
 }
 
-function prepare_dep {
+function prepare_hadoop_dep {
 	yum install -y gcc gcc-c++
-	export LD_LIBRARY_PATH=/usr/lib/gcc/aarch64-redhat-linux/4.8.2:$LD_LIBRARY_PATH
-	export LIBRARY_PATH=/usr/lib/gcc/aarch64-redhat-linux/4.8.2:$LIBRARY_PATH
 	yum install -y subversion
 	yum install -y openssl-devel
 	yum install -y cmake
@@ -32,7 +28,7 @@ function prepare_dep {
 }
 
 function build_hadoop {
-	prepare_dep
+	prepare_hadoop_dep
 
 	if [ ! -d ${TOPDIR}/build/${HADOOP_SRC_DIR} ]; then
 		if [ ! -e ${TOPDIR}/pkgs/${HADOOP_SRC} ]; then
@@ -44,11 +40,28 @@ function build_hadoop {
 	pushd ${TOPDIR}/build/${HADOOP_SRC_DIR}
 	echo "Build Hadoop ..."
 	warn "mvn package -Pdist,native -DskipTests -Dtar -e"
-	#warn "mvn package -Pdist,native -DskipTests -Dtar -T64 -e"
 	popd
-	mv ${TOPDIR}/build/${HADOOP_SRC_DIR} ${TOPDIR}/install/{HADOOP_DIR}
-	tar czf ${TOPDIR}/pkgs/${HADOOP_BIN} ${TOPDIR}/install/{HADOOP_DIR}
+	mv ${TOPDIR}/build/${HADOOP_SRC_DIR}/hadoop-dist/target/${HADOOP_BIN} ${TOPDIR}/pkgs
 }
+
+function configure_hadoop {
+grep -q "${HADOOP_DIR}" $TOPDIR/install/etc/profile && return 0
+
+echo "export HADOOP_INSTALL=${TOPDIR}/install/${HADOOP_DIR}" >> $TOPDIR/install/etc/profile
+echo 'export PATH=${HADOOP_INSTALL}/bin:${HADOOP_INSTALL}/sbin:${PATH}' >> $TOPDIR/install/etc/profile
+echo "export HADOOP_DATA=${TOPDIR}/data/${HADOOP_DIR}" >> $TOPDIR/install/etc/profile
+echo 'export HADOOP_MAPRED_HOME=${HADOOP_INSTALL}' >> $TOPDIR/install/etc/profile
+echo 'export HADOOP_COMMON_HOME=${HADOOP_INSTALL}' >> $TOPDIR/install/etc/profile
+echo 'export HADOOP_HDFS_HOME=${HADOOP_INSTALL}' >> $TOPDIR/install/etc/profile
+echo 'export YARN_HOME=${HADOOP_INSTALL}' >> $TOPDIR/install/etc/profile
+echo 'export HADOOP_COMMON_LIB_NATIVE_DIR=${HADOOP_INSTALL}/lib/native' >> $TOPDIR/install/etc/profile
+echo 'export HADOOP_OPTS="-Djava.library.path=${HADDOP_INSTALL}/lib:${HADOOP_INSTALL}/lib/native"' >> $TOPDIR/install/etc/profile
+}
+
+if hadoop_installed; then
+	echo "$HADOOP_BIN already installed!"
+	exit 0
+fi
 
 if [ ! -d ${TOPDIR}/install/${HADOOP_DIR} ]; then
 	if [ ! -e ${TOPDIR}/pkgs/${HADOOP_BIN} ]; then
@@ -57,3 +70,4 @@ if [ ! -d ${TOPDIR}/install/${HADOOP_DIR} ]; then
 	tar xf ${TOPDIR}/pkgs/${HADOOP_BIN} -C ${TOPDIR}/install
 fi
 
+warn "configure_hadoop"
