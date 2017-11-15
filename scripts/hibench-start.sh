@@ -93,7 +93,7 @@ function run_hibench_case {
 
 function run_hibench {
 	#caseslist=("micro/wordcount" "micro/terasort" "micro/sort" "websearch/pagerank" "micro/dfsioe" "sql/scan" "ml/kmeans")
-	caseslist=("micro/dfsioe")
+	caseslist=("micro/wordcount")
 
 	for casename in ${caseslist[@]}; do
 		delete_tmp_dirs

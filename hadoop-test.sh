@@ -27,10 +27,12 @@ function build_test {
 	sh $TOPDIR/scripts/jdk-build.sh
 }
 
-function run_test {
-	#echo -e "\nstart hadoop ..."
-	#sh $TOPDIR/scripts/hadoop-start.sh
+function run_hadoop {
+	echo -e "\nstart hadoop ..."
+	sh $TOPDIR/scripts/hadoop-start.sh
+}
 
+function run_test {
 	echo -e "\nstart hibench ..."
 	sh $TOPDIR/scripts/hibench-start.sh
 }
@@ -41,4 +43,5 @@ function run_test {
 cd ${TOPDIR}
 
 #warn "build_test"
+#run_hadoop
 warn "run_test"
