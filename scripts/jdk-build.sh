@@ -2,11 +2,21 @@
 
 . $TOPDIR/scripts/env.sh
 
+#set -x
+
+JAVA_HOME=${1-"/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b12.el7_4.aarch64/jre"}
+
+echo "JAVAHOME=$JAVA_HOME"
+
 function jdk_installed {
-	java -version > /dev/null 2>&1 && return 0 || return 1
+	java -version > /dev/null 2>&1 || return 1
+	#grep -q \"$JAVA_HOME\" $TOPDIR/install/etc/profile || return 1
+	grep -q "JAVA_HOME" $TOPDIR/install/etc/profile || return 1
+
+	return 0
 }
 
-JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b12.el7_4.aarch64/jre
+
 function jdk_configure {
 	grep -q "JAVA_HOME" $TOPDIR/install/etc/profile && return 0
 

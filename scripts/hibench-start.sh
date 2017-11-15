@@ -120,6 +120,7 @@ if ! grep -q "HIBENCH_PATH" $TOPDIR/install/etc/profile; then
 fi
 
 #config_hibench
+system_configure
 hibench_configure_2
 run_hibench
 #run_hibench_test

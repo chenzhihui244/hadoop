@@ -55,7 +55,7 @@ echo 'export HADOOP_COMMON_HOME=${HADOOP_PATH}' >> $TOPDIR/install/etc/profile
 echo 'export HADOOP_HDFS_HOME=${HADOOP_PATH}' >> $TOPDIR/install/etc/profile
 echo 'export YARN_HOME=${HADOOP_PATH}' >> $TOPDIR/install/etc/profile
 echo 'export HADOOP_COMMON_LIB_NATIVE_DIR=${HADOOP_PATH}/lib/native' >> $TOPDIR/install/etc/profile
-echo 'export HADOOP_OPTS="-Djava.library.path=${HADDOP_INSTALL}/lib:${HADOOP_PATH}/lib/native"' >> $TOPDIR/install/etc/profile
+echo 'export HADOOP_OPTS="-Djava.library.path=${HADOOP_PATH}/lib:${HADOOP_PATH}/lib/native"' >> $TOPDIR/install/etc/profile
 }
 
 if hadoop_installed; then
