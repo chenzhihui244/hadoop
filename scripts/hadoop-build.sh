@@ -45,17 +45,17 @@ function build_hadoop {
 }
 
 function configure_hadoop {
-grep -q "${HADOOP_DIR}" $TOPDIR/install/etc/profile && return 0
+grep -q "HADOOP_PATH" $TOPDIR/install/etc/profile && return 0
 
-echo "export HADOOP_INSTALL=${TOPDIR}/install/${HADOOP_DIR}" >> $TOPDIR/install/etc/profile
-echo 'export PATH=${HADOOP_INSTALL}/bin:${HADOOP_INSTALL}/sbin:${PATH}' >> $TOPDIR/install/etc/profile
+echo "export HADOOP_PATH=${TOPDIR}/install/${HADOOP_DIR}" >> $TOPDIR/install/etc/profile
+echo 'export PATH=${HADOOP_PATH}/bin:${HADOOP_PATH}/sbin:${PATH}' >> $TOPDIR/install/etc/profile
 echo "export HADOOP_DATA=${TOPDIR}/data/${HADOOP_DIR}" >> $TOPDIR/install/etc/profile
-echo 'export HADOOP_MAPRED_HOME=${HADOOP_INSTALL}' >> $TOPDIR/install/etc/profile
-echo 'export HADOOP_COMMON_HOME=${HADOOP_INSTALL}' >> $TOPDIR/install/etc/profile
-echo 'export HADOOP_HDFS_HOME=${HADOOP_INSTALL}' >> $TOPDIR/install/etc/profile
-echo 'export YARN_HOME=${HADOOP_INSTALL}' >> $TOPDIR/install/etc/profile
-echo 'export HADOOP_COMMON_LIB_NATIVE_DIR=${HADOOP_INSTALL}/lib/native' >> $TOPDIR/install/etc/profile
-echo 'export HADOOP_OPTS="-Djava.library.path=${HADDOP_INSTALL}/lib:${HADOOP_INSTALL}/lib/native"' >> $TOPDIR/install/etc/profile
+echo 'export HADOOP_MAPRED_HOME=${HADOOP_PATH}' >> $TOPDIR/install/etc/profile
+echo 'export HADOOP_COMMON_HOME=${HADOOP_PATH}' >> $TOPDIR/install/etc/profile
+echo 'export HADOOP_HDFS_HOME=${HADOOP_PATH}' >> $TOPDIR/install/etc/profile
+echo 'export YARN_HOME=${HADOOP_PATH}' >> $TOPDIR/install/etc/profile
+echo 'export HADOOP_COMMON_LIB_NATIVE_DIR=${HADOOP_PATH}/lib/native' >> $TOPDIR/install/etc/profile
+echo 'export HADOOP_OPTS="-Djava.library.path=${HADDOP_INSTALL}/lib:${HADOOP_PATH}/lib/native"' >> $TOPDIR/install/etc/profile
 }
 
 if hadoop_installed; then

@@ -13,12 +13,32 @@ if [ ! -e ${TOPDIR}/install/etc/profile ]; then
 		$TOPDIR/install/etc/profile
 fi
 
+function build_test {
+	echo -e "\nsetup clang ..."
+	sh $TOPDIR/scripts/clang-build.sh
+
+	echo -e "\nsetup hadoop ..."
+	sh ${TOPDIR}/scripts/hadoop-build.sh
+
+	echo -e "\nsetup hibench ..."
+	sh $TOPDIR/scripts/hibench-build.sh
+
+	echo -e "\nsetup jdk ..."
+	sh $TOPDIR/scripts/jdk-build.sh
+}
+
+function run_test {
+	#echo -e "\nstart hadoop ..."
+	#sh $TOPDIR/scripts/hadoop-start.sh
+
+	echo -e "\nstart hibench ..."
+	sh $TOPDIR/scripts/hibench-start.sh
+}
+
+. $TOPDIR/scripts/env.sh
 . $TOPDIR/install/etc/profile
 
 cd ${TOPDIR}
 
-echo "setup clang ..."
-sh $TOPDIR/scripts/clang-build.sh
-
-echo "setup hadoop ..."
-sh ${TOPDIR}/scripts/hadoop-build.sh
+#warn "build_test"
+warn "run_test"
