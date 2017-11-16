@@ -37,6 +37,7 @@ function build_hibench {
 
 function configure_hibench {
 	grep -q "HIBENCH_PATH" $TOPDIR/install/etc/profile && return 0
+
 	echo "export HIBENCH_PATH=${TOPDIR}/install/${HIBENCH_BIN_DIR}" >> $TOPDIR/install/etc/profile
 }
 

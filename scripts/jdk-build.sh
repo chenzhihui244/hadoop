@@ -4,7 +4,7 @@
 
 #set -x
 
-JAVA_HOME=${1-"/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b12.el7_4.aarch64/jre"}
+JAVA_HOME=${1-"/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.151-1.b12.el7_4.aarch64"}
 
 echo "JAVAHOME=$JAVA_HOME"
 

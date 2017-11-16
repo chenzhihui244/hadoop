@@ -2,15 +2,13 @@
 
 HADOOP_URL=http://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.8.2/hadoop-2.8.2-src.tar.gz
 
-HADOOP_SRC=hadoop-2.8.0-src.tar.gz
+HADOOP_SRC=hadoop-2.8.2-src.tar.gz
 HADOOP_SRC_DIR=${HADOOP_SRC%\.*}
 HADOOP_SRC_DIR=${HADOOP_SRC_DIR%\.*}
 
-HADOOP_BIN=hadoop-2.8.0.tar.gz
+HADOOP_BIN=hadoop-2.8.2.tar.gz
 HADOOP_DIR=${HADOOP_BIN%\.*}
 HADOOP_DIR=${HADOOP_DIR%\.*}
-
-#set -x
 
 . $TOPDIR/scripts/env.sh
 

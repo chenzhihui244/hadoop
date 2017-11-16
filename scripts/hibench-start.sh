@@ -48,9 +48,10 @@ function config_hibench
 }
 
 function hibench_configure_2 {
-	grep -q "$HIBENCH_PATH" ${HIBENCH_PATH}/conf/hadoop.conf && return 0
+	set -x
+	grep -q \"$HIBENCH_PATH\" ${HIBENCH_PATH}/conf/hadoop.conf && return 0
 
-	cp config/hibench/hibench_hadoop.conf ${HIBENCH_PATH}/conf/hadoop.conf
+	cp config/hibench/hadoop.conf ${HIBENCH_PATH}/conf/hadoop.conf
 	sed -i "s;hadoop_path;$HADOOP_PATH;g" ${HIBENCH_PATH}/conf/hadoop.conf
 }
 
@@ -120,8 +121,6 @@ if ! grep -q "HIBENCH_PATH" $TOPDIR/install/etc/profile; then
 fi
 
 #config_hibench
-system_configure
+#system_configure
 hibench_configure_2
 run_hibench
-#run_hibench_test
-#run_hibench_all

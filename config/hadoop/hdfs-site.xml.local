@@ -17,12 +17,20 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
-  <property>
-    <name>hadoop.tmp.dir</name>
-    <value>file:hadoop_path/tmp/</value>
-  </property>
-  <property>
-    <name>fs.defaultFS</name>
-    <value>hdfs://localhost:9000</value>
-  </property>
+ 	<property>
+   	      <name>dfs.namenode.secondary.http-address</name>
+   	      <value>localhost:50090</value>
+        </property>
+ 	<property>
+             <name>dfs.replication</name>
+             <value>1</value>
+        </property>
+        <property>
+             <name>dfs.namenode.name.dir</name>
+             <value>file:hadoop_data/tmp/dfs/name</value>
+        </property>
+        <property>
+             <name>dfs.datanode.data.dir</name>
+             <value>file:hadoop_data/tmp/dfs/data</value>
+        </property>
 </configuration>
