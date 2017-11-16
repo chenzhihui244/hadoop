@@ -1,12 +1,12 @@
 #!/bin/sh
 
 HADOOP_URL=http://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.8.2/hadoop-2.8.2-src.tar.gz
-
 HADOOP_SRC=hadoop-2.8.2-src.tar.gz
+HADOOP_BIN=hadoop-2.8.2.tar.gz
+
 HADOOP_SRC_DIR=${HADOOP_SRC%\.*}
 HADOOP_SRC_DIR=${HADOOP_SRC_DIR%\.*}
 
-HADOOP_BIN=hadoop-2.8.2.tar.gz
 HADOOP_DIR=${HADOOP_BIN%\.*}
 HADOOP_DIR=${HADOOP_DIR%\.*}
 
@@ -47,7 +47,7 @@ grep -q "HADOOP_PATH" $TOPDIR/install/etc/profile && return 0
 
 echo "export HADOOP_PATH=${TOPDIR}/install/${HADOOP_DIR}" >> $TOPDIR/install/etc/profile
 echo 'export PATH=${HADOOP_PATH}/bin:${HADOOP_PATH}/sbin:${PATH}' >> $TOPDIR/install/etc/profile
-echo "export HADOOP_DATA=${TOPDIR}/data/${HADOOP_DIR}" >> $TOPDIR/install/etc/profile
+echo "export HADOOP_DATA=${TOPDIR}/install/data/${HADOOP_DIR}" >> $TOPDIR/install/etc/profile
 echo 'export HADOOP_MAPRED_HOME=${HADOOP_PATH}' >> $TOPDIR/install/etc/profile
 echo 'export HADOOP_COMMON_HOME=${HADOOP_PATH}' >> $TOPDIR/install/etc/profile
 echo 'export HADOOP_HDFS_HOME=${HADOOP_PATH}' >> $TOPDIR/install/etc/profile

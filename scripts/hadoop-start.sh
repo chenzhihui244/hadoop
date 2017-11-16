@@ -4,7 +4,9 @@
 
 function config_hadoop
 {
-	grep -q "$export JAVA_HOME=\${JAVA_HOME}" $HADOOP_PATH/etc/hadoop/hadoop-env.sh || return 0
+	grep -q "${JAVA_HOME}" $HADOOP_PATH/etc/hadoop/hadoop-env.sh && return 0
+
+	echo "hadoop not configure, configure hadoop ..."
 
 	# java enviornment update
 	sed -i "s;export JAVA_HOME=\${JAVA_HOME};export JAVA_HOME=${JAVA_HOME};g" \
@@ -52,7 +54,6 @@ function start_local_hadoop {
 	warn "${HADOOP_PATH}/bin/hdfs namenode -format"
 	sleep 1
 
-	#warn "$HADOOP_PATH/sbin/start-all.sh"
 	warn "$HADOOP_PATH/sbin/start-dfs.sh"
 	warn "$HADOOP_PATH/sbin/start-yarn.sh"
 	if (( `hadoop_status` == 5 )); then

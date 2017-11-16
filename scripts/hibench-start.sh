@@ -2,54 +2,10 @@
 
 . $TOPDIR/scripts/env.sh
 
-function config_hibench
-{
-	cp config/hibench/bayes_hibench_hadoop.conf $HIBENCH_PATH/workloads/bayes/conf/10-baytes-userdefine.conf
-	sed -i "s;hadoop_path;$HADOOP_PATH;g" ${HIBENCH_PATH}/workloads/bayes/conf/10-baytes-userdefine.conf
+function hibench_configure {
+	grep -q "$HADOOP_PATH" ${HIBENCH_PATH}/conf/hadoop.conf && return 0
 
-	cp config/hibench/join_hibench_hadoop.conf ${HIBENCH_PATH}/workloads/join/conf/10-join-userdefine.conf
-	sed -i "s;hadoop_path;$HADOOP_PATH;g" ${HIBENCH_PATH}/workloads/join/conf/10-join-userdefine.conf
-
-	cp config/hibench/aggregation_hibench_hadoop.conf ${HIBENCH_PATH}/workloads/aggregation/conf/10-aggregation-userdefine.conf
-	sed -i "s;hadoop_path;$HADOOP_PATH;g" ${HIBENCH_PATH}/workloads/aggregation/conf/10-aggregation-userdefine.conf
-
-	cp config/hibench/pagerank_hibench_hadoop.conf ${HIBENCH_PATH}/workloads/pagerank/conf/10-pagerank-userdefine.conf
-	sed -i "s;hadoop_path;$HADOOP_PATH;g" ${HIBENCH_PATH}/workloads/pagerank/conf/10-pagerank-userdefine.conf
-
-	cp config/hibench/sleep_hibench_hadoop.conf ${HIBENCH_PATH}/workloads/sleep/conf/10-sleep-userdefine.conf
-	sed -i "s;hadoop_path;$HADOOP_PATH;g" ${HIBENCH_PATH}/workloads/sleep/conf/10-sleep-userdefine.conf
-
-	cp config/hibench/scan_hibench_hadoop.conf ${HIBENCH_PATH}/workloads/scan/conf/10-scan-userdefine.conf
-	sed -i "s;hadoop_path;$HADOOP_PATH;g" ${HIBENCH_PATH}/workloads/scan/conf/10-scan-userdefine.conf
-
-	cp config/hibench/dfsioe_hibench_hadoop.conf ${HIBENCH_PATH}/workloads/dfsioe/conf/10-dfsioe-userdefine.conf
-	sed -i "s;hadoop_path;$HADOOP_PATH;g" ${HIBENCH_PATH}/workloads/dfsioe/conf/10-dfsioe-userdefine.conf
-
-	cp config/hibench/wordcount_hibench_hadoop.conf ${HIBENCH_PATH}/workloads/wordcount/conf/10-wordcount-userdefine.conf
-	sed -i "s;hadoop_path;$HADOOP_PATH;g" ${HIBENCH_PATH}/workloads/wordcount/conf/10-wordcount-userdefine.conf
-
-	cp config/hibench/terasort_hibench_hadoop.conf ${HIBENCH_PATH}/workloads/terasort/conf/10-terasort-userdefine.conf
-	sed -i "s;hadoop_path;$HADOOP_PATH;g" ${HIBENCH_PATH}/workloads/terasort/conf/10-terasort-userdefine.conf
-
-	cp config/hibench/sort_hibench_hadoop.conf ${HIBENCH_PATH}/workloads/sort/conf/10-sort-userdefine.conf
-	sed -i "s;hadoop_path;$HADOOP_PATH;g" ${HIBENCH_PATH}/workloads/sort/conf/10-sort-userdefine.conf
-
-	cp config/hibench/kmeans_hibench_hadoop.conf ${HIBENCH_PATH}/workloads/kmeans/conf/10-kmeans-userdefine.conf
-	sed -i "s;hadoop_path;$HADOOP_PATH;g" ${HIBENCH_PATH}/workloads/kmeans/conf/10-kmeans-userdefine.conf
-
-	cp config/hibench/nutchindexing_hibench_hadoop.conf ${HIBENCH_PATH}/workloads/nutchindexing/conf/10-nuthindexing-userdefine.conf
-	sed -i "s;hadoop_path;$HADOOP_PATH;g" ${HIBENCH_PATH}/workloads/nutchindexing/conf/10-nuthindexing-userdefine.conf
-
-	cp config/hibench/languages.lst ${HIBENCH_PATH}/conf/languages.lst
-	cp config/hibench/10-data-scale-profile.conf ${HIBENCH_PATH}/conf/10-data-scale-profile.conf
-	#cp config/hibench/00-default-properties.conf ${HIBENCH_PATH}/config/00-default-properties.conf
-	cp config/hibench/99-user_defined_properties.conf ${HIBENCH_PATH}/conf/99-user_defined_properties.conf
-	sed -i "s;hadoop_path;$HADOOP_PATH;g" ${HIBENCH_PATH}/conf/99-user_defined_properties.conf
-}
-
-function hibench_configure_2 {
-	set -x
-	grep -q \"$HIBENCH_PATH\" ${HIBENCH_PATH}/conf/hadoop.conf && return 0
+	echo "hibench not configured, start configuring ..."
 
 	cp config/hibench/hadoop.conf ${HIBENCH_PATH}/conf/hadoop.conf
 	sed -i "s;hadoop_path;$HADOOP_PATH;g" ${HIBENCH_PATH}/conf/hadoop.conf
@@ -57,23 +13,42 @@ function hibench_configure_2 {
 
 function system_configure {
 	ulimit -n 102400
+	echo never > /sys/kernel/mm/transparent_hugepage/defrag
+	echo 0 > /proc/sys/kernel/numa_balancing
+	echo 0 > /proc/sys/vm/swappiness
+	echo 0 > /proc/sys/kernel/sched_autogroup_enabled
+	echo 3000 > /proc/sys/vm/dirty_expire_centisecs
+	echo 40 > /proc/sys/vm/dirty_ratio
+	echo 10240 > /proc/sys/net/core/somaxconn
+	echo 5000000 > /proc/sys/kernel/sched_migration_cost_ns
+	service irqbalance stop
 }
 
-#function system_restore {
-#}
+function system_restore {
+	echo 60000 > /proc/sys/kernel/numa_balancing_scan_period_max_ms
+	echo 1 > /proc/sys/kernel/numa_balancing
+	echo 1 > /proc/sys/kernel/sched_autogroup_enabled
+	echo 0 > /proc/sys/vm/swappiness
+	echo 500000 > /proc/sys/kernel/sched_migration_cost_ns
+}
 
 function delete_tmp_dirs {
 	hdfs dfs -rm -r /HiBench
 }
 
-function run_hibench_test {
-	echo -e "\nPrepare Data ......"
-	${HIBENCH_PATH}/bin/workloads/micro/sort/prepare/prepare.sh
-	echo -e "\nBegin to execute benchmark ......"
-	${HIBENCH_PATH}/bin/workloads/micro/sort/hadoop/run.sh
-}
+cases_list=( \
+	"micro/wordcount" \
+	"micro/terasort" \
+	"micro/sort" \
+	"websearch/pagerank" \
+	"micro/dfsioe" \
+	"sql/scan" "ml/kmeans" \
+) 
+num_map=("64" "32" "32" "64" "32" "32" "64")
+num_red=("64" "32" "32" "32" "32" "32" "64")
+scale_list=("huge" "huge" "huge" "huge" "huge" "huge" "huge")
 
-function run_hibench_case {
+function run_job {
 	local cas=${1}
 	local scale=${2}
 	local map=${3-32}
@@ -93,26 +68,20 @@ function run_hibench_case {
 }
 
 function run_hibench {
-	#caseslist=("micro/wordcount" "micro/terasort" "micro/sort" "websearch/pagerank" "micro/dfsioe" "sql/scan" "ml/kmeans")
-	caseslist=("micro/wordcount")
+	local i=${1-0}
 
-	for casename in ${caseslist[@]}; do
-		delete_tmp_dirs
-		run_hibench_case ${casename} large
-
-		#delete_tmp_dirs
-		#run_hibench_case ${casename} huge
-
-		#echo "Test Result Report:"
-		#cat ${HIBENCH_PATH}/report/hibench.report
-	done
+	delete_tmp_dirs
+	run_job ${cases_list[$i]} ${scale_list[$i]} ${num_map[$i]} ${num_red[$i]}
 }
 
 function run_hibench_all {
-	${HIBENCH_PATH}/bin/run-all.sh
-
-	echo "Test Result Report:"
-	cat ${HIBENCH_PATH}/report/hibench.report
+	local i=0
+	
+	while [[ ${i} -lt ${#cases_list[@]} ]]; do
+		delete_tmp_dirs
+		run_job ${cases_list[$i]} ${scale_list[$i]} ${num_map[$i]} ${num_red[$i]}
+		let "i++"
+	done
 }
 
 if ! grep -q "HIBENCH_PATH" $TOPDIR/install/etc/profile; then
@@ -120,7 +89,10 @@ if ! grep -q "HIBENCH_PATH" $TOPDIR/install/etc/profile; then
 	exit 1
 fi
 
-#config_hibench
-#system_configure
-hibench_configure_2
+yum install -y bc
+
+system_configure
+hibench_configure
 run_hibench
+#run_hibench_all
+system_restore

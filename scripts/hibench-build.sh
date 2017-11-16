@@ -1,13 +1,13 @@
 #!/bin/sh
 
 HIBENCH_URL=https://github.com/intel-hadoop/HiBench.git
-HIBENCH_TAG="HiBench-6.0"
+HIBENCH_TAG="HiBench-7.0"
+HIBENCH_SRC=hibench-src-7.0.tar.gz
+HIBENCH_BIN=hibench-7.0.tar.gz
 
-HIBENCH_SRC=hibench-src-6.0.tar.gz
 HIBENCH_SRC_DIR=${HIBENCH_SRC%\.*}
 HIBENCH_SRC_DIR=${HIBENCH_SRC_DIR%\.*}
 
-HIBENCH_BIN=hibench-6.0.tar.gz
 HIBENCH_BIN_DIR=${HIBENCH_BIN%\.*}
 HIBENCH_BIN_DIR=${HIBENCH_BIN_DIR%\.*}
 
