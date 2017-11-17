@@ -1,8 +1,8 @@
 #!/bin/sh
 
 HADOOP_URL=http://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.8.2/hadoop-2.8.2-src.tar.gz
-HADOOP_SRC=hadoop-2.8.2-src.tar.gz
-HADOOP_BIN=hadoop-2.8.2.tar.gz
+HADOOP_SRC=hadoop-2.8.0-src.tar.gz
+HADOOP_BIN=hadoop-2.8.0.tar.gz
 
 HADOOP_SRC_DIR=${HADOOP_SRC%\.*}
 HADOOP_SRC_DIR=${HADOOP_SRC_DIR%\.*}
@@ -10,13 +10,11 @@ HADOOP_SRC_DIR=${HADOOP_SRC_DIR%\.*}
 HADOOP_DIR=${HADOOP_BIN%\.*}
 HADOOP_DIR=${HADOOP_DIR%\.*}
 
-. $TOPDIR/scripts/env.sh
-
 function hadoop_installed {
 	[ -e $TOPDIR/install/${HADOOP_DIR}/bin/hadoop ]
 }
 
-function prepare_hadoop_dep {
+function prepare_hadoop {
 	yum install -y gcc gcc-c++
 	yum install -y subversion
 	yum install -y openssl-devel
@@ -26,7 +24,7 @@ function prepare_hadoop_dep {
 }
 
 function build_hadoop {
-	prepare_hadoop_dep
+	prepare_hadoop
 
 	if [ ! -d ${TOPDIR}/build/${HADOOP_SRC_DIR} ]; then
 		if [ ! -e ${TOPDIR}/pkgs/${HADOOP_SRC} ]; then
@@ -56,16 +54,16 @@ echo 'export HADOOP_COMMON_LIB_NATIVE_DIR=${HADOOP_PATH}/lib/native' >> $TOPDIR/
 echo 'export HADOOP_OPTS="-Djava.library.path=${HADOOP_PATH}/lib:${HADOOP_PATH}/lib/native"' >> $TOPDIR/install/etc/profile
 }
 
-if hadoop_installed; then
-	echo "$HADOOP_BIN already installed!"
-	exit 0
-fi
 
-if [ ! -d ${TOPDIR}/install/${HADOOP_DIR} ]; then
-	if [ ! -e ${TOPDIR}/pkgs/${HADOOP_BIN} ]; then
-		build_hadoop
+function install_hadoop {
+	hadoop_installed && return 0
+
+	if [ ! -d ${TOPDIR}/install/${HADOOP_DIR} ]; then
+		if [ ! -e ${TOPDIR}/pkgs/${HADOOP_BIN} ]; then
+			build_hadoop
+		fi
+		tar xf ${TOPDIR}/pkgs/${HADOOP_BIN} -C ${TOPDIR}/install
 	fi
-	tar xf ${TOPDIR}/pkgs/${HADOOP_BIN} -C ${TOPDIR}/install
-fi
 
-warn "configure_hadoop"
+	warn "configure_hadoop"
+}

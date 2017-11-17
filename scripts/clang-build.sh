@@ -15,16 +15,16 @@ function configure_clang {
 		$TOPDIR/install/etc/profile
 }
 
-if clang_installed; then
-	echo "$CLANG already installed"
-	exit 0
-fi
+function setup_clang {
+	if [ ! -e $TOPDIR/pkgs/${CLANG} ]; then
+		warn "wget ${CLANG_URL} -O $TOPDIR/pkgs/${CLANG}"
+	fi
 
-if [ ! -e $TOPDIR/pkgs/${CLANG} ]; then
-	warn "wget ${CLANG_URL} -O $TOPDIR/pkgs/${CLANG}"
-fi
+	tar xf $TOPDIR/pkgs/${CLANG} -C $TOPDIR/install
+}
 
-tar xf $TOPDIR/pkgs/${CLANG} -C $TOPDIR/install
+function install_clang {
+	clang_installed && return 0
 
-configure_clang
-
+	setup_clang && configure_clang
+}

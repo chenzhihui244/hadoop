@@ -9,22 +9,26 @@ if [ ! -e ${TOPDIR}/install/etc/profile ]; then
 	echo "export TOPDIR=$TOPDIR" >${TOPDIR}/install/etc/profile
 fi
 
+. $TOPDIR/scripts/env.sh
+. $TOPDIR/scripts/clang-build.sh
+. $TOPDIR/scripts/hadoop-build.sh
+. $TOPDIR/scripts/hibench-build.sh
+. $TOPDIR/scripts/jdk-build.sh
+. $TOPDIR/install/etc/profile
+
 function build_test {
-	#echo -e "\nsetup clang ..."
-	#sh $TOPDIR/scripts/clang-build.sh
+	echo -e "\nsetup clang ..."
+	warn "install_clang"
 
 	echo -e "\nsetup hadoop ..."
-	sh ${TOPDIR}/scripts/hadoop-build.sh
+	warn "install_hadoop"
 
 	echo -e "\nsetup hibench ..."
-	sh $TOPDIR/scripts/hibench-build.sh
+	warn "install_hibench"
 
 	echo -e "\nsetup jdk ..."
-	sh $TOPDIR/scripts/jdk-build.sh
+	warn "jdk_install"
 }
-
-. $TOPDIR/scripts/env.sh
-. $TOPDIR/install/etc/profile
 
 cd ${TOPDIR}
 

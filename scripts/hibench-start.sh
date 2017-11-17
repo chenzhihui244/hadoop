@@ -1,7 +1,5 @@
 #!/bin/sh
 
-. $TOPDIR/scripts/env.sh
-
 function hibench_configure {
 	grep -q "$HADOOP_PATH" ${HIBENCH_PATH}/conf/hadoop.conf && return 0
 
@@ -61,6 +59,7 @@ function run_job {
 	sed -i "s/hibench\.default\.shuffle.*/hibench\.default\.shuffle\.parallelism\ ${red}/g" \
 		${HIBENCH_PATH}/conf/hibench.conf
 
+	delete_tmp_dirs
 	echo -e "\nPrepare $cas Data ......"
 	${HIBENCH_PATH}/bin/workloads/${cas}/prepare/prepare.sh
 	echo -e "\nBegin to execute $cas benchmark ......"
@@ -70,7 +69,6 @@ function run_job {
 function run_hibench {
 	local i=${1-0}
 
-	delete_tmp_dirs
 	run_job ${cases_list[$i]} ${scale_list[$i]} ${num_map[$i]} ${num_red[$i]}
 }
 
@@ -78,21 +76,7 @@ function run_hibench_all {
 	local i=0
 	
 	while [[ ${i} -lt ${#cases_list[@]} ]]; do
-		delete_tmp_dirs
 		run_job ${cases_list[$i]} ${scale_list[$i]} ${num_map[$i]} ${num_red[$i]}
 		let "i++"
 	done
 }
-
-if ! grep -q "HIBENCH_PATH" $TOPDIR/install/etc/profile; then
-	echo "hibench not installed"
-	exit 1
-fi
-
-yum install -y bc
-
-system_configure
-hibench_configure
-run_hibench
-#run_hibench_all
-system_restore

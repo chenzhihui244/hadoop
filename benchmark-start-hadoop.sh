@@ -2,13 +2,20 @@
 
 TOPDIR=$(cd `dirname $0`; pwd)
 
-function run_hadoop {
-	echo -e "\nstart hadoop ..."
-	sh $TOPDIR/scripts/hadoop-start.sh
-}
-
 . $TOPDIR/scripts/env.sh
+. $TOPDIR/scripts/hadoop-start.sh
 . $TOPDIR/install/etc/profile
+
+function run_hadoop {
+	if [ -z "$HADOOP_PATH" ]; then
+		echo "Hadoop is not installed yet"
+		exit 1
+	fi
+
+	echo -e "\nstart hadoop ..."
+	warn "config_hadoop" &&
+	warn "start_local_hadoop"
+}
 
 cd ${TOPDIR}
 

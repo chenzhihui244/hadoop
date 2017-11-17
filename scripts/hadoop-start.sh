@@ -1,7 +1,5 @@
 #!/bin/sh
 
-. $TOPDIR/scripts/env.sh
-
 function config_hadoop
 {
 	grep -q "${JAVA_HOME}" $HADOOP_PATH/etc/hadoop/hadoop-env.sh && return 0
@@ -56,17 +54,11 @@ function start_local_hadoop {
 
 	warn "$HADOOP_PATH/sbin/start-dfs.sh"
 	warn "$HADOOP_PATH/sbin/start-yarn.sh"
+	sleep 1
+
 	if (( `hadoop_status` == 5 )); then
 		echo "hadoop started successfully!"
 	else
 		echo "hadoop started failed!"
 	fi
 }
-
-if [ -z "$HADOOP_PATH" ]; then
-	echo "Hadoop is not installed yet"
-	exit 1
-fi
-
-warn "config_hadoop"
-warn "start_local_hadoop"
