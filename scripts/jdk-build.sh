@@ -1,12 +1,12 @@
 #!/bin/sh
 
 #JDK_BIN=java-1.8.0-openjdk-1.8.0.151-1.b12.el7_4.aarch64.tar.gz
-#JDK_BIN=jdk-8u152-linux-arm64-vfp-hflt.tar.gz
-JDK_BIN=java-1.8.0-openjdk-1.8.0.144-0.b01.el7_4.aarch64.tar.gz
+JDK_BIN=jdk-8u152-linux-arm64-vfp-hflt.tar.gz
+#JDK_BIN=java-1.8.0-openjdk-1.8.0.144-0.b01.el7_4.aarch64.tar.gz
 
-#JDK_DIR=jdk1.8.0_152
-JDK_DIR=${JDK_BIN%\.*}
-JDK_DIR=${JDK_DIR%\.*}
+JDK_DIR=jdk1.8.0_152
+#JDK_DIR=${JDK_BIN%\.*}
+#JDK_DIR=${JDK_DIR%\.*}
 
 . $TOPDIR/scripts/env.sh
 
