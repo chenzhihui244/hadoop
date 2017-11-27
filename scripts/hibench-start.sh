@@ -34,7 +34,7 @@ function delete_tmp_dirs {
 	hdfs dfs -rm -r /HiBench
 }
 
-cases_list=( \
+workloads_list=( \
 	"micro/wordcount" \
 	"micro/terasort" \
 	"micro/sort" \
@@ -46,8 +46,8 @@ num_map=("64" "32" "32" "64" "32" "32" "64")
 num_red=("64" "32" "32" "32" "32" "32" "64")
 scale_list=("huge" "huge" "huge" "huge" "huge" "huge" "huge")
 
-function run_job {
-	local cas=${1}
+function run_workload {
+	local workload=${1}
 	local scale=${2}
 	local map=${3-32}
 	local red=${4-32}
@@ -60,23 +60,23 @@ function run_job {
 		${HIBENCH_PATH}/conf/hibench.conf
 
 	delete_tmp_dirs
-	echo -e "\nPrepare $cas Data ......"
-	${HIBENCH_PATH}/bin/workloads/${cas}/prepare/prepare.sh
-	echo -e "\nBegin to execute $cas benchmark ......"
-	${HIBENCH_PATH}/bin/workloads/${cas}/hadoop/run.sh
+	echo -e "\nPrepare $workload Data ......"
+	${HIBENCH_PATH}/bin/workloads/${workload}/prepare/prepare.sh
+	echo -e "\nBegin to execute $workload benchmark ......"
+	${HIBENCH_PATH}/bin/workloads/${workload}/hadoop/run.sh
 }
 
 function run_hibench {
 	local i=${1-0}
 
-	run_job ${cases_list[$i]} ${scale_list[$i]} ${num_map[$i]} ${num_red[$i]}
+	run_workload ${workloads_list[$i]} ${scale_list[$i]} ${num_map[$i]} ${num_red[$i]}
 }
 
 function run_hibench_all {
 	local i=0
 	
-	while [[ ${i} -lt ${#cases_list[@]} ]]; do
-		run_job ${cases_list[$i]} ${scale_list[$i]} ${num_map[$i]} ${num_red[$i]}
+	while [[ ${i} -lt ${#workloads_list[@]} ]]; do
+		run_workload ${workloads_list[$i]} ${scale_list[$i]} ${num_map[$i]} ${num_red[$i]}
 		let "i++"
 	done
 }
