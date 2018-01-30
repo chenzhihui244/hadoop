@@ -2,23 +2,25 @@
 
 function config_hadoop
 {
-	grep -q "${JAVA_HOME}" $HADOOP_PATH/etc/hadoop/hadoop-env.sh && return 0
+	grep -q "${JAVA_HOME}" $HADOOP_HOME/etc/hadoop/hadoop-env.sh && 
+	echo "hadoop already configured" &&
+	return 0
 
 	echo "hadoop not configure, configure hadoop ..."
 
 	# java enviornment update
 	sed -i "s;export JAVA_HOME=\${JAVA_HOME};export JAVA_HOME=${JAVA_HOME};g" \
-		${HADOOP_PATH}/etc/hadoop/hadoop-env.sh
+		${HADOOP_HOME}/etc/hadoop/hadoop-env.sh
 
-	cp -f $TOPDIR/config/hadoop/core-site.xml.local ${HADOOP_PATH}/etc/hadoop/core-site.xml
-	sed -i "s;hadoop_data;${HADOOP_DATA};g" ${HADOOP_PATH}/etc/hadoop/core-site.xml
+	cp -f $TOPDIR/config/hadoop/core-site.xml.local ${HADOOP_HOME}/etc/hadoop/core-site.xml
+	sed -i "s;hadoop_data;${HADOOP_DATA};g" ${HADOOP_HOME}/etc/hadoop/core-site.xml
 
-	cp -f $TOPDIR/config/hadoop/hdfs-site.xml.local ${HADOOP_PATH}/etc/hadoop/hdfs-site.xml
-	sed -i "s;hadoop_data;${HADOOP_DATA};g" ${HADOOP_PATH}/etc/hadoop/hdfs-site.xml
+	cp -f $TOPDIR/config/hadoop/hdfs-site.xml.local ${HADOOP_HOME}/etc/hadoop/hdfs-site.xml
+	sed -i "s;hadoop_data;${HADOOP_DATA};g" ${HADOOP_HOME}/etc/hadoop/hdfs-site.xml
 
-	cp -f $TOPDIR/config/hadoop/mapred-site.xml.local ${HADOOP_PATH}/etc/hadoop/mapred-site.xml
+	cp -f $TOPDIR/config/hadoop/mapred-site.xml.local ${HADOOP_HOME}/etc/hadoop/mapred-site.xml
 
-	cp -f $TOPDIR/config/hadoop/yarn-site.xml.local ${HADOOP_PATH}/etc/hadoop/yarn-site.xml
+	cp -f $TOPDIR/config/hadoop/yarn-site.xml.local ${HADOOP_HOME}/etc/hadoop/yarn-site.xml
 }
 
 function hadoop_status {
@@ -33,8 +35,8 @@ function hadoop_status {
 
 function stop_local_hadoop {
 	while (( `hadoop_status` != 0 )); do
-		warn "$HADOOP_PATH/sbin/stop-yarn.sh"
-		warn "$HADOOP_PATH/sbin/stop-dfs.sh"
+		warn "$HADOOP_HOME/sbin/stop-yarn.sh"
+		warn "$HADOOP_HOME/sbin/stop-dfs.sh"
 		sleep 1
 	done
 }
@@ -49,11 +51,11 @@ function start_local_hadoop {
 	stop_local_hadoop
 
 	rm -rf ${HADOOP_DATA}/tmp/*
-	warn "${HADOOP_PATH}/bin/hdfs namenode -format"
+	warn "${HADOOP_HOME}/bin/hdfs namenode -format"
 	sleep 1
 
-	warn "$HADOOP_PATH/sbin/start-dfs.sh"
-	warn "$HADOOP_PATH/sbin/start-yarn.sh"
+	warn "$HADOOP_HOME/sbin/start-dfs.sh"
+	warn "$HADOOP_HOME/sbin/start-yarn.sh"
 	sleep 1
 
 	if (( `hadoop_status` == 5 )); then

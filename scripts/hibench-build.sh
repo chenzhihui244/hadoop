@@ -17,7 +17,7 @@ function hibench_installed {
 }
 
 function prepare_hibench {
-	yum install -y bc
+	yum install -y bc > /dev/null
 }
 
 function build_hibench {
@@ -44,7 +44,11 @@ function configure_hibench {
 }
 
 function install_hibench {
-	hibench_installed && return 0
+	hibench_installed && 
+	echo "hibench already installed" &&
+	return 0
+
+	prepare_hibench
 
 	if [ ! -d $TOPDIR/install/${HIBENCH_BIN_DIR} ]; then
 		if [ ! -e $TOPDIR/pkgs/${HIBENCH_BIN} ]; then
@@ -53,6 +57,5 @@ function install_hibench {
 		tar xf ${TOPDIR}/pkgs/${HIBENCH_BIN} -C $TOPDIR/install
 	fi
 
-	prepare_hibench
 	warn "configure_hibench"
 }

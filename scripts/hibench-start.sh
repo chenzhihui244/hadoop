@@ -1,12 +1,14 @@
 #!/bin/sh
 
 function hibench_configure {
-	grep -q "$HADOOP_PATH" ${HIBENCH_PATH}/conf/hadoop.conf && return 0
+	grep -q "$HADOOP_HOME" ${HIBENCH_PATH}/conf/hadoop.conf && 
+	echo "hibench already configured" &&
+	return 0
 
 	echo "hibench not configured, start configuring ..."
 
 	cp config/hibench/hadoop.conf ${HIBENCH_PATH}/conf/hadoop.conf
-	sed -i "s;hadoop_path;$HADOOP_PATH;g" ${HIBENCH_PATH}/conf/hadoop.conf
+	sed -i "s;hadoop_path;$HADOOP_HOME;g" ${HIBENCH_PATH}/conf/hadoop.conf
 }
 
 function system_configure {
@@ -44,7 +46,8 @@ workloads_list=( \
 ) 
 num_map=("64" "32" "32" "64" "32" "32" "64")
 num_red=("64" "32" "32" "32" "32" "32" "64")
-scale_list=("huge" "huge" "huge" "huge" "huge" "huge" "huge")
+scale_list=("tiny" "huge" "huge" "huge" "huge" "huge" "huge")
+#scale_list=("huge" "huge" "huge" "huge" "huge" "huge" "huge")
 
 function run_workload {
 	local workload=${1}
