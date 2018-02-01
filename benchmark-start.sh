@@ -15,8 +15,8 @@ function run_test {
 	echo -e "\nstart hibench ..."
 	warn "system_configure"
 	warn "hibench_configure"
-	warn "run_hibench"
-	#warn "run_hibench_all"
+	#warn "run_hibench"
+	warn "run_hibench_all"
 	warn "system_restore"
 }
 

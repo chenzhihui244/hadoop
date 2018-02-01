@@ -7,7 +7,7 @@ TOPDIR=$(cd `dirname $0`; pwd)
 . $TOPDIR/install/etc/profile
 
 function run_hadoop {
-	if [ -z "$HADOOP_PATH" ]; then
+	if [ -z "$HADOOP_HOME" ]; then
 		echo "Hadoop is not installed yet"
 		exit 1
 	fi

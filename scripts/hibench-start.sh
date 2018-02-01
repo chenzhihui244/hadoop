@@ -46,7 +46,7 @@ workloads_list=( \
 ) 
 num_map=("64" "32" "32" "64" "32" "32" "64")
 num_red=("64" "32" "32" "32" "32" "32" "64")
-scale_list=("tiny" "huge" "huge" "huge" "huge" "huge" "huge")
+scale_list=("huge" "huge" "huge" "huge" "huge" "huge" "huge")
 #scale_list=("huge" "huge" "huge" "huge" "huge" "huge" "huge")
 
 function run_workload {

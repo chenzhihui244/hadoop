@@ -53,7 +53,7 @@ echo 'export HADOOP_HDFS_HOME=${HADOOP_HOME}' >> $TOPDIR/install/etc/profile
 echo 'export YARN_HOME=${HADOOP_HOME}' >> $TOPDIR/install/etc/profile
 echo 'export HADOOP_COMMON_LIB_NATIVE_DIR=${HADOOP_HOME}/lib/native' >> $TOPDIR/install/etc/profile
 echo 'export HADOOP_OPTS="-Djava.library.path=${HADOOP_HOME}/lib:${HADOOP_HOME}/lib/native"' >> $TOPDIR/install/etc/profile
-echo "export JAVA_LIBRARY_PATH=$HADOOP_HOME/lib/native" >> $TOPDIR/install/etc/profile 
+echo 'export JAVA_LIBRARY_PATH=$HADOOP_HOME/lib/native' >> $TOPDIR/install/etc/profile 
 }
 
 function install_hadoop {

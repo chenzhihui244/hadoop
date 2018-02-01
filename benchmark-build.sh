@@ -1,8 +1,8 @@
 #!/bin/sh
 
-opt_build_clang=1
+opt_build_clang=0
 opt_build_jdk=1
-opt_build_mvn=1
+opt_build_mvn=0
 opt_build_hadoop=1
 opt_build_hibench=1
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-opt_java="pkg" # ("apt" "pkg" "rpm")
+opt_java="rpm" # ("apt" "pkg" "rpm")
 
 #JDK_BIN=jdk-8u152-linux-arm64-vfp-hflt.tar.gz
 JDK_BIN=jdk8u-server-release-1609.tar.xz
